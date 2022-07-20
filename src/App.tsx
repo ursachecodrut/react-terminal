@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import Terminal from './Terminal/Terminal';
 
 function App() {
-	const [count, setCount] = useState(0);
-
-	return <div className="App"></div>;
+	return (
+		<div className="App">
+			<Terminal />
+		</div>
+	);
 }
 
 export default App;

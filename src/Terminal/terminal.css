@@ -1,0 +1,55 @@
+:root {
+    --background: #282a36;
+    --current-line: #44475a;
+    --foreground: #f8f8f2;
+    --comment: #6272a4;
+    --cyan: #8be9fd;
+    --green: #50fa7b;
+    --orange: #ffb86c;
+    --pink: #ff79c6;
+    --purple: #bd93f9;
+    --red: #ff5555;
+    --yellow: #f1fa8c;
+}
+
+#terminal {
+    background: var(--background);
+    height: 500px;
+    min-width: 300px;
+    border-radius: 10px;
+}
+
+#terminal #terminal-header {
+    background: var(--current-line);
+    border-radius: 10px 10px 0 0;
+    height: 8%;
+    display: flex;
+    justify-items: start;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+}
+
+.circle {
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+}
+
+.red {
+    background: var(--red);
+}
+
+.orange {
+    background: var(--orange);
+}
+
+.green {
+    background: var(--green);
+}
