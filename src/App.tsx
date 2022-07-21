@@ -4,7 +4,7 @@ import Terminal from './Terminal/Terminal';
 function App() {
 	return (
 		<div className="App">
-			<Terminal />
+			<Terminal userName="codrut" hostName="portfolio" rootName="~" />
 		</div>
 	);
 }

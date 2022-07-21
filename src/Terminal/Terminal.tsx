@@ -1,21 +1,37 @@
-import React, { useState } from 'react';
-import { HistoryItem } from '../models';
+import React, { useEffect, useState } from 'react';
+import { FileSystem, HistoryItem } from '../models';
 import './terminal.css';
 
-const Terminal = () => {
+interface TerminalProps {
+	userName?: string;
+	hostName?: string;
+	rootName?: string;
+}
+
+const Terminal = ({
+	userName = 'codrut',
+	hostName = 'portfolio',
+	rootName = '~',
+}: TerminalProps) => {
+	const fs = new FileSystem(rootName);
+	const [path, setPath] = useState(fs.root.name);
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 
 	const addToHistory = (newElem: HistoryItem) =>
 		setHistory((state) => [...state, newElem]);
 
 	const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
+		const target = e.target as HTMLInputElement;
 		e.preventDefault();
-		// addToHistory({
-		// 	command: e.target.value,
-		// 	path: '.',
-		// 	output: '',
-		// });
+		addToHistory({
+			command: target.value,
+			path: path,
+			output: '',
+		});
+		target.value = '';
 	};
+
+	useEffect(() => {}, []);
 
 	return (
 		<main id="terminal">
@@ -31,7 +47,7 @@ const Terminal = () => {
 					<div key={index} className="history-item">
 						<div className="terminal-line">
 							<div className="host">
-								codrut@portfolio
+								{userName}@{hostName}
 								<span className="text-foreground">:</span>
 							</div>
 							<div className="path">{item.path}</div>
@@ -43,10 +59,10 @@ const Terminal = () => {
 				))}
 				<div className="terminal-line">
 					<div className="host">
-						codrut@portfolio
+						{userName}@{hostName}
 						<span className="text-foreground">:</span>
 					</div>
-					<div className="path">~</div>
+					<div className="path">{path}</div>
 					<div className="text-foreground">$</div>
 					<input
 						type="text"

@@ -3,9 +3,15 @@ import { File } from './File';
 import { Item } from './Item';
 
 export class FileSystem {
-	private readonly _root: Directory = new Directory('root');
-	private _currentDirectory = this._root;
-	private _currentPathArray: Directory[] = [this._currentDirectory];
+	private readonly _root: Directory;
+	private _currentDirectory;
+	private _currentPathArray;
+
+	constructor(rootName: string = '~') {
+		this._root = new Directory(rootName);
+		this._currentDirectory = this._root;
+		this._currentPathArray = [this._currentDirectory];
+	}
 
 	get root() {
 		return this._root;
@@ -113,8 +119,6 @@ export class FileSystem {
 		this._currentPathArray.pop();
 		this._currentDirectory =
 			this._currentPathArray[this._currentPathArray.length - 1];
-		console.log(this._currentPathArray);
-		console.log(this._currentDirectory);
 	}
 
 	private getDirFromPathString(dirPath: string) {
