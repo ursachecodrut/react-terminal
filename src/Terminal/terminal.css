@@ -29,11 +29,49 @@
     padding: 0 1rem;
 }
 
+#terminal #terminal-body {
+    padding: 1rem 0.5rem;
+}
+
 .header-buttons {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     gap: 10px;
+}
+
+.terminal-line {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.1rem;
+}
+
+#terminal-input {
+    background-color: var(--background);
+    border: none;
+    color: var(--foreground);
+    display: block;
+    width: 100%;
+}
+
+#terminal-input:focus {
+    outline: none;
+}
+
+.host {
+    color: var(--green);
+}
+
+.path {
+    color: var(--purple);
+}
+
+.output {
+    color: var(--foreground);
+}
+
+.command {
+    color: var(--foreground);
 }
 
 .circle {
@@ -42,14 +80,18 @@
     height: 1rem;
 }
 
-.red {
+.bg-red {
     background: var(--red);
 }
 
-.orange {
+.bg-orange {
     background: var(--orange);
 }
 
-.green {
+.bg-green {
     background: var(--green);
+}
+
+.text-foreground {
+    color: var(--foreground);
 }
