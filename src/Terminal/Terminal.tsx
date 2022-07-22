@@ -1,26 +1,25 @@
 import React, { useRef, useState } from 'react';
 import { FileSystem, HistoryItem } from '../models';
-import myFs from './my-fs';
 import './terminal.css';
 
 interface TerminalProps {
 	userName?: string;
 	hostName?: string;
-	rootName?: string;
+	fs: FileSystem;
 }
 
 const Terminal = ({
 	userName = 'codrut',
 	hostName = 'portfolio',
-	rootName = '~',
+	fs,
 }: TerminalProps) => {
-	const [path, setPath] = useState(myFs.root.name);
+	const [currentPath, setCurrentPath] = useState(fs.root.name);
 	const [history, setHistory] = useState<HistoryItem[]>([]);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	const addToHistory = ({
 		command = inputRef.current!.value,
-		path,
+		path = currentPath,
 		output,
 	}: HistoryItem) =>
 		setHistory((state) => [...state, { command, path, output }]);
@@ -39,16 +38,39 @@ const Terminal = ({
 			return;
 		}
 
-		const [command, arg] = words;
+		let output = '';
+		const [command, ...args] = words;
 		switch (command) {
 			case 'clear':
 				setHistory([]);
 				break;
 			case 'ls':
-				addToHistory({ output: 'test' });
+				if (args.length === 0) {
+					output = fs.getCurrentDirContent().join(' ');
+				} else if (args.length === 1) {
+					const content = fs.getDirFromPathString(args[0])?.content;
+					if (content) {
+						output = content.map((item) => item.name).join(' ');
+					} else {
+						output = 'No such directory';
+					}
+				}
+				break;
+			case 'cd':
+				if (args.length === 0) {
+					output = 'Please provide a path';
+				} else if (args.length === 1) {
+				} else {
+					output = 'Too many arguments';
+				}
+
+				break;
 			default:
+				output = 'Unknown command';
 				break;
 		}
+
+		addToHistory({ output });
 	};
 
 	return (
@@ -80,7 +102,7 @@ const Terminal = ({
 						{userName}@{hostName}
 						<span className="text-foreground">:</span>
 					</div>
-					<div className="path">{path}</div>
+					<div className="path">{currentPath}</div>
 					<div className="text-foreground">$</div>
 					<input
 						ref={inputRef}

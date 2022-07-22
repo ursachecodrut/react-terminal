@@ -121,9 +121,10 @@ export class FileSystem {
 			this._currentPathArray[this._currentPathArray.length - 1];
 	}
 
-	private getDirFromPathString(dirPath: string) {
+	// TODO: dynamic regex based on root name
+	getDirFromPathString(dirPath: string) {
 		// root dir
-		if (dirPath.match(/^(root\/?|\/)$/g)) {
+		if (dirPath.match(/^(~\/?|\/)$/g)) {
 			return this.root;
 		}
 
@@ -131,12 +132,12 @@ export class FileSystem {
 			return this.currentDirectory;
 		}
 
-		let dir = dirPath.match(/^(root\/?|\/)/g)
+		let dir = dirPath.match(/^(~\/?|\/)/g)
 			? this.root
 			: this.currentDirectory;
 
 		const paths = dirPath
-			.replace(/^(root\/|.root\/|\.\/|\/)|\/$/g, '')
+			.replace(/^(~\/|.~\/|\.\/|\/)|\/$/g, '')
 			.split('/');
 
 		while (paths.length) {
