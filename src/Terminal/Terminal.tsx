@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FileSystem, HistoryItem } from '../models';
+import myFs from './my-fs';
 import './terminal.css';
 
 interface TerminalProps {
@@ -13,25 +14,42 @@ const Terminal = ({
 	hostName = 'portfolio',
 	rootName = '~',
 }: TerminalProps) => {
-	const fs = new FileSystem(rootName);
-	const [path, setPath] = useState(fs.root.name);
+	const [path, setPath] = useState(myFs.root.name);
 	const [history, setHistory] = useState<HistoryItem[]>([]);
+	const inputRef = useRef<HTMLInputElement | null>(null);
 
-	const addToHistory = (newElem: HistoryItem) =>
-		setHistory((state) => [...state, newElem]);
+	const addToHistory = ({
+		command = inputRef.current!.value,
+		path,
+		output,
+	}: HistoryItem) =>
+		setHistory((state) => [...state, { command, path, output }]);
 
 	const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
 		const target = e.target as HTMLInputElement;
 		e.preventDefault();
-		addToHistory({
-			command: target.value,
-			path: path,
-			output: '',
-		});
+		// run command
+		runCommand(target.value);
 		target.value = '';
 	};
 
-	useEffect(() => {}, []);
+	const runCommand = (input: string) => {
+		const words = input.replace(/ +/g, ' ').trim().split(' ');
+		if (words.length > 2) {
+			return;
+		}
+
+		const [command, arg] = words;
+		switch (command) {
+			case 'clear':
+				setHistory([]);
+				break;
+			case 'ls':
+				addToHistory({ output: 'test' });
+			default:
+				break;
+		}
+	};
 
 	return (
 		<main id="terminal">
@@ -65,6 +83,7 @@ const Terminal = ({
 					<div className="path">{path}</div>
 					<div className="text-foreground">$</div>
 					<input
+						ref={inputRef}
 						type="text"
 						id="terminal-input"
 						onKeyDown={(e) => {
