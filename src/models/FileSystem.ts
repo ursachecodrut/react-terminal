@@ -66,7 +66,7 @@ export class FileSystem {
 	}
 
 	currentPathString() {
-		return this.currentPathArray.join('/');
+		return this._currentPathArray.map((e) => e.name).join('/');
 	}
 
 	printCurrentDirectory() {
@@ -121,6 +121,24 @@ export class FileSystem {
 			this._currentPathArray[this._currentPathArray.length - 1];
 	}
 
+	reducePath(paths: string[], isAbsolutePath: boolean) {
+		let stack: string[];
+		if (isAbsolutePath) {
+			stack = [];
+		} else {
+			stack = [...this.currentPathArray.map((e) => e.name)];
+			stack.shift();
+		}
+		for (let i = 0; i < paths.length; i++) {
+			if (paths[i] === '..') {
+				stack.pop();
+			} else {
+				stack.push(paths[i]);
+			}
+		}
+		return stack;
+	}
+
 	// TODO: dynamic regex based on root name
 	getDirFromPathString(dirPath: string) {
 		// root dir
@@ -128,23 +146,21 @@ export class FileSystem {
 			return this.root;
 		}
 
+		// current dir
 		if (dirPath.match(/^\.\/?$/g)) {
 			return this.currentDirectory;
 		}
 
-		let dir = dirPath.match(/^(~\/?|\/)/g)
-			? this.root
-			: this.currentDirectory;
+		let dir = this._root;
+		const paths = dirPath.replace(/^(\.\/|~\/)|\/+$/g, '').split('/');
+		const isAbsolutePath = dirPath.match(/^(~\/?)/g) ? true : false;
+		const stack = this.reducePath(paths, isAbsolutePath);
 
-		const paths = dirPath
-			.replace(/^(~\/|.~\/|\.\/|\/)|\/$/g, '')
-			.split('/');
-
-		while (paths.length) {
-			dir = dir.getItem(paths.shift()!) as Directory;
+		while (stack.length) {
+			dir = dir.getItem(stack.shift()!) as Directory;
 		}
 
-		if (paths.length === 0) {
+		if (stack.length === 0) {
 			return dir;
 		}
 

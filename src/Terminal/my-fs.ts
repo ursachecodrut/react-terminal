@@ -3,7 +3,7 @@ import { Directory, FileSystem } from '../models';
 const myFs = new FileSystem('~');
 const projects = new Directory('projects');
 const about = new Directory('about');
-const experience = new Directory('expericence');
+const experience = new Directory('experience');
 const volunteer = new Directory('volunteer');
 
 const reactTerminal = new Directory('react-terminal');

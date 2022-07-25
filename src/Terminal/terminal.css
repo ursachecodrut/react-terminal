@@ -64,6 +64,7 @@
 
 .path {
     color: var(--purple);
+    flex-shrink: 0; 
 }
 
 .output {

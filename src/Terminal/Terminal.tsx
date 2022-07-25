@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { FileSystem, HistoryItem } from '../models';
+import { useRef, useState, KeyboardEvent } from 'react';
+import { FileSystem, HistoryElement } from '../models';
 import './terminal.css';
 
 interface TerminalProps {
@@ -14,17 +14,17 @@ const Terminal = ({
 	fs,
 }: TerminalProps) => {
 	const [currentPath, setCurrentPath] = useState(fs.root.name);
-	const [history, setHistory] = useState<HistoryItem[]>([]);
+	const [history, setHistory] = useState<HistoryElement[]>([]);
 	const inputRef = useRef<HTMLInputElement | null>(null);
 
 	const addToHistory = ({
 		command = inputRef.current!.value,
 		path = currentPath,
 		output,
-	}: HistoryItem) =>
+	}: HistoryElement) =>
 		setHistory((state) => [...state, { command, path, output }]);
 
-	const handleEnterKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
+	const handleEnterKeyPress = (e: KeyboardEvent<HTMLElement>) => {
 		const target = e.target as HTMLInputElement;
 		e.preventDefault();
 		// run command
@@ -43,9 +43,11 @@ const Terminal = ({
 		switch (command) {
 			case 'clear':
 				setHistory([]);
-				break;
+				return;
 			case 'ls':
+				console.log(fs.currentDirectory);
 				if (args.length === 0) {
+					console.log(fs.getCurrentDirContent());
 					output = fs.getCurrentDirContent().join(' ');
 				} else if (args.length === 1) {
 					const content = fs.getDirFromPathString(args[0])?.content;
@@ -55,21 +57,30 @@ const Terminal = ({
 						output = 'No such directory';
 					}
 				}
+
 				break;
 			case 'cd':
 				if (args.length === 0) {
 					output = 'Please provide a path';
 				} else if (args.length === 1) {
+					let dir;
+					dir = fs.changeCurrentDir(args[0]);
+					if (dir) {
+						setCurrentPath(fs.currentPathString());
+					} else {
+						output = 'No such directory';
+					}
 				} else {
 					output = 'Too many arguments';
+					return;
 				}
 
 				break;
 			default:
 				output = 'Unknown command';
+
 				break;
 		}
-
 		addToHistory({ output });
 	};
 
