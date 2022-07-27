@@ -1,5 +1,5 @@
 import { useRef, useState, KeyboardEvent } from 'react';
-import { FileSystem, HistoryElement } from '../models';
+import { File, FileSystem, HistoryElement } from '../models';
 import './terminal.css';
 
 interface TerminalProps {
@@ -45,14 +45,12 @@ const Terminal = ({
 				setHistory([]);
 				return;
 			case 'ls':
-				console.log(fs.currentDirectory);
 				if (args.length === 0) {
-					console.log(fs.getCurrentDirContent());
 					output = fs.getCurrentDirContent().join(' ');
 				} else if (args.length === 1) {
-					const content = fs.getDirFromPathString(args[0])?.content;
+					const content = fs.getDirContent(args[0]);
 					if (content) {
-						output = content.map((item) => item.name).join(' ');
+						output = content;
 					} else {
 						output = 'No such directory';
 					}

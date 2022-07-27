@@ -88,7 +88,23 @@ export class FileSystem {
 		if (!asStringArr) {
 			return content;
 		}
-		return content.map((c) => c.name);
+		return content.map((item) =>
+			item instanceof File ? `${item.name}.${item.mimeType}` : item.name
+		);
+	}
+
+	getDirContent(dirPath: string, asStringArr: boolean = true) {
+		const content = this.getDirFromPathString(dirPath)?.content;
+		if (content) {
+			return content
+				.map((item) =>
+					item instanceof File
+						? `${item.name}.${item.mimeType}`
+						: item.name
+				)
+				.join(' ');
+		}
+		return null;
 	}
 
 	changeCurrentDir(path: string) {
