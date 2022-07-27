@@ -1,5 +1,5 @@
 import { useRef, useState, KeyboardEvent } from 'react';
-import { File, FileSystem, HistoryElement } from '../models';
+import { Directory, File, FileSystem, HistoryElement } from '../models';
 import './terminal.css';
 
 interface TerminalProps {
@@ -39,23 +39,49 @@ const Terminal = ({
 			return;
 		}
 
-		let output = '';
+		let output: string | JSX.Element = '';
 		const [command, ...args] = words;
 		switch (command) {
 			case 'clear':
 				setHistory([]);
 				return;
 			case 'ls':
-				if (args.length === 0) {
-					output = fs.getCurrentDirContent().join(' ');
-				} else if (args.length === 1) {
-					const content = fs.getDirContent(args[0]);
-					if (content) {
-						output = content;
-					} else {
-						output = 'No such directory';
-					}
+				console.log('alo');
+				const content =
+					args.length === 0
+						? fs.getCurrentDirContent()
+						: fs.getDirContent(args[0])!;
+				if (content) {
+					output = (
+						<span>
+							{content.map((item, idx) => {
+								if (item instanceof File) {
+									return (
+										<span
+											key={idx}
+											className="text-foreground mr-xs"
+										>
+											{`${item.name}.${item.mimeType}`}
+										</span>
+									);
+								} else if (item instanceof Directory) {
+									return (
+										<span
+											key={idx}
+											className="text-purple mr-xs"
+										>
+											{item.name}
+										</span>
+									);
+								}
+								return;
+							})}
+						</span>
+					);
+				} else {
+					output = 'No such directory';
 				}
+
 				break;
 			case 'cd':
 				if (args.length === 0) {

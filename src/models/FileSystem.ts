@@ -83,51 +83,40 @@ export class FileSystem {
 		);
 	}
 
-	getCurrentDirContent(asStringArr: boolean = true) {
-		const content = this.currentDirectory.content;
-		if (!asStringArr) {
-			return content;
-		}
-		return content.map((item) =>
-			item instanceof File ? `${item.name}.${item.mimeType}` : item.name
-		);
+	getCurrentDirContent() {
+		return this.currentDirectory.content;
 	}
 
-	getDirContent(dirPath: string, asStringArr: boolean = true) {
+	getDirContent(dirPath: string) {
 		const content = this.getDirFromPathString(dirPath)?.content;
 		if (content) {
-			return content
-				.map((item) =>
-					item instanceof File
-						? `${item.name}.${item.mimeType}`
-						: item.name
-				)
-				.join(' ');
+			return content;
 		}
 		return null;
 	}
 
 	getFileContent(path: string) {
 		const paths = path.replace(/\/$/g, '').split('/');
-		const fileName = paths.pop();
-		if (paths.length === 0) {
-			if (this.currentDirectory.hasItem(fileName!)) {
-				const file = this.currentDirectory.getItem(fileName!);
-				if (file instanceof File) {
-					return file.textContent;
+		const file = paths.pop();
+
+		if (file) {
+			const [fileName, mimeType] = file.split('.');
+			if (
+				paths.length === 0 ||
+				(paths.length === 1 && paths[0] === '.')
+			) {
+				if (this.currentDirectory.hasItem(fileName!)) {
+					const item = this.currentDirectory.getItem(fileName!);
+					if (item instanceof File && mimeType === item.mimeType) {
+						return item.textContent;
+					}
 				}
 			}
-		}
-		const dir = this.getDirFromPathString(paths.join('/'));
-		if (fileName) {
-			console.log('wow');
-			console.log(dir);
+			const dir = this.getDirFromPathString(paths.join('/'));
 			if (dir && dir.hasItem(fileName)) {
-				console.log('dir');
-				const file = dir.getItem(fileName);
-				console.log(file);
-				if (file instanceof File) {
-					return file.textContent;
+				const item = dir.getItem(fileName);
+				if (item instanceof File && mimeType === item.mimeType) {
+					return item.textContent;
 				}
 			}
 		}

@@ -5,7 +5,7 @@ import myFs from './Terminal/my-fs';
 function App() {
 	return (
 		<div className="App">
-			<Terminal userName="diana" hostName="google" fs={myFs} />
+			<Terminal userName="codrut" hostName="portfolio" fs={myFs} />
 		</div>
 	);
 }
