@@ -35,6 +35,7 @@ const Terminal = ({
 	const runCommand = (input: string) => {
 		const words = input.replace(/ +/g, ' ').trim().split(' ');
 		if (words.length > 2) {
+			addToHistory({ output: 'Too many arguments' });
 			return;
 		}
 
@@ -55,22 +56,29 @@ const Terminal = ({
 						output = 'No such directory';
 					}
 				}
-
 				break;
 			case 'cd':
 				if (args.length === 0) {
 					output = 'Please provide a path';
 				} else if (args.length === 1) {
-					let dir;
-					dir = fs.changeCurrentDir(args[0]);
+					let dir = fs.changeCurrentDir(args[0]);
 					if (dir) {
 						setCurrentPath(fs.currentPathString());
 					} else {
 						output = 'No such directory';
 					}
+				}
+				break;
+			case 'cat':
+				if (args.length !== 1) {
+					output = 'Please provide a path';
 				} else {
-					output = 'Too many arguments';
-					return;
+					const fileContent = fs.getFileContent(args[0]);
+					if (fileContent) {
+						output = fileContent;
+					} else {
+						output = 'No such file';
+					}
 				}
 
 				break;

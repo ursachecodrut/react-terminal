@@ -19,6 +19,12 @@ export class Directory extends Item {
 		return this._children.get(itemName) || null;
 	}
 
+	getDirectory(dirName: string) {
+		return this._children.get(dirName) instanceof Directory
+			? (this._children.get(dirName) as Directory)
+			: null;
+	}
+
 	removeItem(itemName: string) {
 		const item = this.getItem(itemName);
 

@@ -107,12 +107,40 @@ export class FileSystem {
 		return null;
 	}
 
+	getFileContent(path: string) {
+		const paths = path.replace(/\/$/g, '').split('/');
+		const fileName = paths.pop();
+		if (paths.length === 0) {
+			if (this.currentDirectory.hasItem(fileName!)) {
+				const file = this.currentDirectory.getItem(fileName!);
+				if (file instanceof File) {
+					return file.textContent;
+				}
+			}
+		}
+		const dir = this.getDirFromPathString(paths.join('/'));
+		if (fileName) {
+			console.log('wow');
+			console.log(dir);
+			if (dir && dir.hasItem(fileName)) {
+				console.log('dir');
+				const file = dir.getItem(fileName);
+				console.log(file);
+				if (file instanceof File) {
+					return file.textContent;
+				}
+			}
+		}
+		return null;
+	}
+
 	changeCurrentDir(path: string) {
 		if (!path) {
 			return null;
 		}
 
 		let dir = this.getDirFromPathString(path);
+
 		if (!dir) {
 			return null;
 		}
@@ -172,11 +200,11 @@ export class FileSystem {
 		const isAbsolutePath = dirPath.match(/^(~\/?)/g) ? true : false;
 		const stack = this.reducePath(paths, isAbsolutePath);
 
-		while (stack.length) {
+		while (stack.length && dir instanceof Directory) {
 			dir = dir.getItem(stack.shift()!) as Directory;
 		}
 
-		if (stack.length === 0) {
+		if (stack.length === 0 && dir instanceof Directory) {
 			return dir;
 		}
 
