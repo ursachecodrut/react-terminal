@@ -1,4 +1,4 @@
-import { useRef, useState, KeyboardEvent } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { Directory, File, FileSystem, HistoryElement } from '../models';
 import './terminal.css';
 
@@ -16,6 +16,7 @@ const Terminal = ({
 	const [currentPath, setCurrentPath] = useState(fs.root.name);
 	const [history, setHistory] = useState<HistoryElement[]>([]);
 	const inputRef = useRef<HTMLInputElement | null>(null);
+	const scrollRef = useRef<HTMLInputElement | null>(null);
 
 	const addToHistory = ({
 		command = inputRef.current!.value,
@@ -27,13 +28,22 @@ const Terminal = ({
 	const handleEnterKeyPress = (e: KeyboardEvent<HTMLElement>) => {
 		const target = e.target as HTMLInputElement;
 		e.preventDefault();
-		// run command
 		runCommand(target.value);
 		target.value = '';
 	};
 
+	useEffect(() => {
+		scrollRef.current!.scrollIntoView({ behavior: 'smooth' });
+	}, [history]);
+
 	const runCommand = (input: string) => {
+		if (input === '') {
+			addToHistory({ output: '' });
+			return;
+		}
+
 		const words = input.replace(/ +/g, ' ').trim().split(' ');
+
 		if (words.length > 2) {
 			addToHistory({ output: 'Too many arguments' });
 			return;
@@ -159,6 +169,7 @@ const Terminal = ({
 						autoFocus
 					/>
 				</div>
+				<div ref={scrollRef} />
 			</section>
 		</main>
 	);
