@@ -172,10 +172,10 @@ export class FileSystem {
 		return stack;
 	}
 
-	// TODO: dynamic regex based on root name
 	getDirFromPathString(dirPath: string) {
 		// root dir
-		if (dirPath.match(/^(~\/?|\/)$/g)) {
+		const isRootRegex = new RegExp(`^(${this._root.name}\/?|\/)$`, 'g');
+		if (dirPath.match(isRootRegex)) {
 			return this.root;
 		}
 
@@ -185,8 +185,17 @@ export class FileSystem {
 		}
 
 		let dir = this._root;
-		const paths = dirPath.replace(/^(\.\/|~\/)|\/+$/g, '').split('/');
-		const isAbsolutePath = dirPath.match(/^(~\/?)/g) ? true : false;
+
+		// check if path is absolute or relative
+		const isAbsolutRegex = new RegExp(`^(${this._root.name}\/?)`, 'g');
+		// make sure path has "/" only inside
+		const shrinkPathRegex = new RegExp(
+			`^(\.\/|${this._root.name}\/)|\/+$`,
+			'g'
+		);
+
+		const paths = dirPath.replace(shrinkPathRegex, '').split('/');
+		const isAbsolutePath = dirPath.match(isAbsolutRegex) ? true : false;
 		const stack = this.reducePath(paths, isAbsolutePath);
 
 		while (stack.length && dir instanceof Directory) {
