@@ -21,7 +21,7 @@
     flex-direction: column;
 }
 
-#terminal #terminal-header {
+#terminal-header {
     background: var(--current-line);
     border-radius: 10px 10px 0 0;
     height: 2rem;
@@ -32,7 +32,7 @@
     padding: 0 1rem;
 }
 
-#terminal #terminal-body {
+#terminal-body {
     padding: 1rem 0.5rem;
     overflow-y: scroll;
 }
