@@ -1,7 +1,13 @@
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { Directory, File, FileSystem, HistoryElement } from '../models';
-import { TerminalWrapper } from './styles';
+import { Theme } from '../models/Theme';
+import {
+	Circle,
+	TerminalBody,
+	TerminalHeader,
+	TerminalWrapper,
+} from './styles';
 import './terminal.css';
 import { dracula } from './themes';
 
@@ -9,12 +15,14 @@ interface TerminalProps {
 	userName?: string;
 	hostName?: string;
 	fs: FileSystem;
+	theme?: Theme;
 }
 
 const Terminal = ({
 	userName = 'codrut',
 	hostName = 'portfolio',
 	fs,
+	theme = dracula,
 }: TerminalProps) => {
 	const [currentPath, setCurrentPath] = useState(fs.root.name);
 	const [history, setHistory] = useState<HistoryElement[]>([]);
@@ -130,16 +138,16 @@ const Terminal = ({
 	};
 
 	return (
-		<ThemeProvider theme={dracula}>
+		<ThemeProvider theme={theme}>
 			<TerminalWrapper>
-				<section id="terminal-header">
+				<TerminalHeader>
 					<div className="header-buttons">
-						<div className="circle bg-red"></div>
-						<div className="circle bg-orange"></div>
-						<div className="circle bg-green"></div>
+						<Circle color={theme.color6} />
+						<Circle color={theme.color2} />
+						<Circle color={theme.color7} />
 					</div>
-				</section>
-				<section id="terminal-body">
+				</TerminalHeader>
+				<TerminalBody>
 					{history.map((item, index) => (
 						<div key={index} className="history-item">
 							<div className="terminal-line">
@@ -174,7 +182,7 @@ const Terminal = ({
 						/>
 					</div>
 					<div ref={scrollRef} />
-				</section>
+				</TerminalBody>
 			</TerminalWrapper>
 		</ThemeProvider>
 	);
