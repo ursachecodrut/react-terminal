@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import Terminal from './Terminal/Terminal';
 import myFs from './Terminal/my-fs';
+import Terminal from './Terminal/Terminal';
+import { dracula } from './Terminal/themes';
 
 function App() {
 	return (
 		<div className="App">
-			<Terminal userName="codrut" hostName="portfolio" fs={myFs} />
+			<Terminal
+				userName="codrut"
+				hostName="portfolio"
+				fs={myFs}
+				theme={dracula}
+			/>
 		</div>
 	);
 }

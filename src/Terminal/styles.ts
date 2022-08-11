@@ -3,6 +3,7 @@ import { Theme } from '../models/Theme';
 
 interface Props {
 	theme: Theme;
+	color?: string;
 }
 
 const TerminalWrapper = styled.main`
@@ -31,10 +32,18 @@ const TerminalBody = styled.section`
 `;
 
 const Circle = styled.div`
-	background: ${(props) => props.color};
+	background: ${(props: Props) => props.color};
 	border-radius: 50%;
 	width: 1rem;
 	height: 1rem;
 `;
 
-export { TerminalWrapper, TerminalHeader, TerminalBody, Circle };
+const TerminalInput = styled.input`
+	background-color: ${(props: Props) => props.theme.primaryBackground};
+	border: none;
+	color: ${(props: Props) => props.theme.foreground};
+	display: block;
+	width: 100%;
+`;
+
+export { TerminalWrapper, TerminalHeader, TerminalBody, Circle, TerminalInput };

@@ -6,6 +6,7 @@ import {
 	Circle,
 	TerminalBody,
 	TerminalHeader,
+	TerminalInput,
 	TerminalWrapper,
 } from './styles';
 import './terminal.css';
@@ -121,7 +122,8 @@ const Terminal = ({
 					output = 'Please provide a path';
 				} else {
 					const fileContent = fs.getFileContent(args[0]);
-					if (fileContent) {
+					console.log(fileContent);
+					if (fileContent != null) {
 						output = fileContent;
 					} else {
 						output = 'No such file';
@@ -143,8 +145,8 @@ const Terminal = ({
 				<TerminalHeader>
 					<div className="header-buttons">
 						<Circle color={theme.color6} />
-						<Circle color={theme.color2} />
 						<Circle color={theme.color7} />
+						<Circle color={theme.color2} />
 					</div>
 				</TerminalHeader>
 				<TerminalBody>
@@ -169,7 +171,7 @@ const Terminal = ({
 						</div>
 						<div className="path">{currentPath}</div>
 						<div className="text-foreground">$</div>
-						<input
+						<TerminalInput
 							ref={inputRef}
 							type="text"
 							id="terminal-input"

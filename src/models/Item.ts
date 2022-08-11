@@ -30,7 +30,6 @@ export abstract class Item {
 	set name(newName: string) {
 		// empty string
 		if (!newName) {
-			console.log('asda');
 			throw new Error('Name must be a non empty string.');
 		}
 
